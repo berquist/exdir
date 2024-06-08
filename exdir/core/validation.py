@@ -1,13 +1,24 @@
 from enum import Enum
 import os
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import sys
+from pathlib import Path, WindowsPath
+from unicodedata import category
 from . import constants as exob
+
+# `ntpath.isreserved` forbids ASCII control characters
+# (https://github.com/python/cpython/blob/7c016deae62308dd1b4e2767fc6abf04857c7843/Lib/ntpath.py#L325)
+# while `pathlib.PureWindowsPath.is_reserved` does not, so it is easiest to
+# forbid all control characters.
+if sys.version_info.minor < 13:
+    from pathlib import PureWindowsPath
+
+    def _is_reserved(path):
+        return PureWindowsPath(path).is_reserved() or _contains_control_character(path)
+else:
+    from ntpath import isreserved
+
+    def _is_reserved(path):
+        return isreserved(path) or _contains_control_character(path)
 
 VALID_CHARACTERS = ("abcdefghijklmnopqrstuvwxyz1234567890_-.")
 
@@ -17,6 +28,11 @@ class NamingRule(Enum):
     STRICT = 2
     THOROUGH = 3
     NONE = 4
+
+
+def _contains_control_character(s):
+    return any(ch for ch in s if category(ch)[0] == "C")
+
 
 def _assert_unique(parent_path, name):
     try:
@@ -58,7 +74,7 @@ def _assert_nonreserved(name):
             "Name cannot be '{}' because it is a reserved filename in Exdir.".format(name_str)
         )
 
-    if pathlib.PureWindowsPath(name_str).is_reserved():
+    if _is_reserved(name_str):
         raise NameError(
             "Name cannot be '{}' because it is a reserved filename in Windows.".format(name_str)
         )
@@ -102,7 +118,7 @@ def thorough(parent_path, name):
     name_lower = name_str.lower()
     _assert_valid_characters(name_lower)
 
-    if isinstance(pathlib.Path(parent_path), pathlib.WindowsPath):
+    if isinstance(Path(parent_path), WindowsPath):
         # use _assert_unique if we're already on Windows, because it is much faster
         # than the test below
         _assert_unique(parent_path, name)
