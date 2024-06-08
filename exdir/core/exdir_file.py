@@ -109,14 +109,24 @@ class File(Group):
         else:
             self.io_mode = OpenMode.READ_WRITE
 
+        parent_path = pathlib.PurePosixPath("")
         super().__init__(
             root_directory=directory,
-            parent_path=pathlib.PurePosixPath(""),
+            parent_path=parent_path,
             object_name="",
             file=self
         )
 
-        already_exists = directory.exists()
+        # If we have name validation, we need to check for uniqueness.  The
+        # directory may exist but with a different case, in which case we
+        # don't want to say that it already exists so that it matches the
+        # correct checks for the requested mode.
+        if name_validation != validation.none:
+            already_exists = validation.path_already_exists_case_sensitive(
+                str(directory.parent), directory.name
+            )
+        else:
+            already_exists = directory.exists()
         if already_exists:
             if not exob.is_nonraw_object_directory(directory):
                 raise RuntimeError(

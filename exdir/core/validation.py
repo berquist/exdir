@@ -1,7 +1,7 @@
 from enum import Enum
-import os
+import os.path
 import sys
-from pathlib import Path, WindowsPath
+from tempfile import NamedTemporaryFile
 from unicodedata import category
 from . import constants as exob
 
@@ -36,13 +36,14 @@ def _contains_control_character(s):
 
 def _assert_unique(parent_path, name):
     try:
-        name_str = str(name)
+        name = str(name)
     except UnicodeEncodeError:
         name = name.encode('utf8')
 
-    if (parent_path / name).exists():
+    if path_already_exists_case_insensitive(str(parent_path), name.lower()):
         raise RuntimeError(
-            f"'{name}' already exists in '{parent_path}'"
+            f"A directory with name (case independent) '{name}' already exists "
+            " and cannot be made according to the naming rule 'thorough'."
         )
 
 
@@ -108,6 +109,7 @@ def strict(parent_path, name):
     _assert_unique(parent_path, name)
     _assert_valid_characters(name)
 
+
 def thorough(parent_path, name):
     _assert_nonempty(parent_path, name)
     _assert_nonreserved(name)
@@ -117,21 +119,24 @@ def thorough(parent_path, name):
         name_str = name.encode('utf8')
     name_lower = name_str.lower()
     _assert_valid_characters(name_lower)
-
-    if isinstance(Path(parent_path), WindowsPath):
-        # use _assert_unique if we're already on Windows, because it is much faster
-        # than the test below
-        _assert_unique(parent_path, name)
-        return
-
-    # os.listdir is much faster here than os.walk or parent_path.iterdir
-    for item in os.listdir(str(parent_path)):
-        if name_lower == item.lower():
-            raise RuntimeError(
-                f"A directory with name (case independent) '{name}' already exists "
-                " and cannot be made according to the naming rule 'thorough'."
-            )
+    _assert_unique(parent_path, name)
 
 
 def none(parent_path, name):
     pass
+
+
+def path_already_exists_case_insensitive(parent_path, name_lower):
+    # os.listdir is much faster here than os.walk or parent_path.iterdir
+    for item in os.listdir(parent_path):
+        if name_lower == item.lower():
+            return True
+    return False
+
+
+def path_already_exists_case_sensitive(parent_path, name):
+    # os.listdir is much faster here than os.walk or parent_path.iterdir
+    for item in os.listdir(parent_path):
+        if name == item:
+            return True
+    return False
