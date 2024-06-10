@@ -1,7 +1,6 @@
 from enum import Enum
 import os.path
 import sys
-from tempfile import NamedTemporaryFile
 from unicodedata import category
 from . import constants as exob
 
@@ -40,7 +39,7 @@ def _assert_unique(parent_path, name):
     except UnicodeEncodeError:
         name = name.encode('utf8')
 
-    if path_already_exists_case_insensitive(str(parent_path), name.lower()):
+    if _path_already_exists_case_insensitive(str(parent_path), name.lower()):
         raise RuntimeError(
             f"A directory with name (case independent) '{name}' already exists "
             " and cannot be made according to the naming rule 'thorough'."
@@ -126,17 +125,9 @@ def none(parent_path, name):
     pass
 
 
-def path_already_exists_case_insensitive(parent_path, name_lower):
+def _path_already_exists_case_insensitive(parent_path, name_lower):
     # os.listdir is much faster here than os.walk or parent_path.iterdir
     for item in os.listdir(parent_path):
         if name_lower == item.lower():
-            return True
-    return False
-
-
-def path_already_exists_case_sensitive(parent_path, name):
-    # os.listdir is much faster here than os.walk or parent_path.iterdir
-    for item in os.listdir(parent_path):
-        if name == item:
             return True
     return False

@@ -122,7 +122,7 @@ class File(Group):
         # don't want to say that it already exists so that it matches the
         # correct checks for the requested mode.
         if name_validation != validation.none:
-            already_exists = validation.path_already_exists_case_sensitive(
+            already_exists = _path_already_exists_case_sensitive(
                 str(directory.parent), directory.name
             )
         else:
@@ -232,3 +232,11 @@ class File(Group):
         if self.io_mode == OpenMode.FILE_CLOSED:
             return "<Closed Exdir File>"
         return f"<Exdir File '{self.directory}' (mode {self.user_mode})>"
+
+
+def _path_already_exists_case_sensitive(parent_path, name):
+    # os.listdir is much faster here than os.walk or parent_path.iterdir
+    for item in os.listdir(parent_path):
+        if name == item:
+            return True
+    return False
