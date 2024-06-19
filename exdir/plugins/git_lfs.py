@@ -37,7 +37,7 @@ class DatasetPlugin(exdir.plugin_interface.Dataset):
 
 class Plugin(exdir.plugin_interface.Plugin):
     def __init__(self, verbose=False):
-        super(Plugin, self).__init__("git_lfs", dataset_plugins=[DatasetPlugin(verbose)])
+        super().__init__("git_lfs", dataset_plugins=[DatasetPlugin(verbose)])
 
 def plugins():
     return _plugins(verbose=False)

@@ -56,7 +56,7 @@ class Group(Object):
         """
         WARNING: Internal. Should only be called from require_group.
         """
-        super(Group, self).__init__(
+        super().__init__(
             root_directory=root_directory,
             parent_path=parent_path,
             object_name=object_name,

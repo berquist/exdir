@@ -38,7 +38,7 @@ class Dataset(exob.Object):
         an existing dataset, which is different from the behavior in h5py.
     """
     def __init__(self, root_directory, parent_path, object_name, file):
-        super(Dataset, self).__init__(
+        super().__init__(
             root_directory=root_directory,
             parent_path=parent_path,
             object_name=object_name,
