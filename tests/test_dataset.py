@@ -217,7 +217,7 @@ def test_create_fillval(setup_teardown_file):
 
 
 
-def test_compound(setup_teardown_file):
+def test_compound_fill(setup_teardown_file):
     """Fill value works with compound types."""
     f = setup_teardown_file[3]
     grp = f.create_group("test")
@@ -237,8 +237,8 @@ def test_exc(setup_teardown_file):
 
 
 def test_string(setup_teardown_file):
-    """Assignement of fixed-length byte string produces a fixed-length
-    ascii dataset """
+    """Assignment of fixed-length byte string produces a fixed-length
+    ASCII dataset"""
     f = setup_teardown_file[3]
     grp = f.create_group("test")
 
@@ -311,7 +311,7 @@ def test_trailing_slash(setup_teardown_file):
 
 
 # Feature: Compound types correctly round-trip
-def test_compund(setup_teardown_file):
+def test_compound(setup_teardown_file):
     """Compound types are read back in correct order."""
     f = setup_teardown_file[3]
     grp = f.create_group("test")
@@ -504,7 +504,7 @@ def test_read(setup_teardown_file):
     assert out.shape == (3, 3)
 
 def test_write_broadcast(setup_teardown_file):
-    """Array fill from constant is  supported."""
+    """Array fill from constant is supported."""
     f = setup_teardown_file[3]
 
     dt = np.dtype('(3,)i')

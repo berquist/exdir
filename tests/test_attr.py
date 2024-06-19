@@ -209,7 +209,7 @@ def test_ascii(setup_teardown_file):
 
 
 def test_unicode(setup_teardown_file):
-    """Access via Unicode string with non-ascii characters."""
+    """Access via Unicode string with non-ASCII characters."""
     f = setup_teardown_file[3]
 
     name = "Omega" + chr(0x03A9)
