@@ -39,7 +39,7 @@ def parse_header_and_leave_cursor(file_handle):
         header += str(byte, 'latin-1')
 
         if not byte:
-            raise IOError("Hit end of file '" + eeg_filename + "'' before '" + search_string + "' found.")
+            raise OSError("Hit end of file '" + eeg_filename + "'' before '" + search_string + "' found.")
 
         if header[-len(search_string):] == search_string:
             break
@@ -213,7 +213,7 @@ class AxonaFile:
         # TODO store attributes, such as pixels_per_metre
         pos_filename = os.path.join(self._path, self._base_filename+".pos")
         if not os.path.exists(pos_filename):
-            raise IOError("'.pos' file not found:" + pos_filename)
+            raise OSError("'.pos' file not found:" + pos_filename)
 
         with open(pos_filename, "rb") as f:
             params = parse_header_and_leave_cursor(f)
@@ -292,7 +292,7 @@ class AxonaFile:
                 elif file_type == "egf":
                     sample_count = int(params["num_EGF_samples"])
                 else:
-                    raise IOError("Unknown file type. Should be .eeg or .efg.")
+                    raise OSError("Unknown file type. Should be .eeg or .efg.")
 
                 sample_rate_split = params["sample_rate"].split(" ")
                 bytes_per_sample = params["bytes_per_sample"]

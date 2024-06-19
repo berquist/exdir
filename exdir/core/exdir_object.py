@@ -28,7 +28,7 @@ def _create_object_directory(directory, metadata):
     don't already exist.
     """
     if directory.exists():
-        raise IOError("The directory '" + str(directory) + "' already exists")
+        raise OSError("The directory '" + str(directory) + "' already exists")
     valid_types = [DATASET_TYPENAME, FILE_TYPENAME, GROUP_TYPENAME]
     typename = metadata[EXDIR_METANAME][TYPE_METANAME]
     if typename not in valid_types:
@@ -67,7 +67,7 @@ def _remove_object_directory(directory):
     Remove object directory and meta file if directory exist.
     """
     if not directory.exists():
-        raise IOError("The directory '" + str(directory) + "' does not exist")
+        raise OSError("The directory '" + str(directory) + "' does not exist")
     assert is_inside_exdir(directory)
     shutil.rmtree(directory)
 

@@ -389,7 +389,7 @@ class Group(Object):
             )
 
         if not exob.is_nonraw_object_directory(directory):
-            raise IOError(
+            raise OSError(
                 "Directory '" + directory +
                 "' is not a valid exdir object."
             )

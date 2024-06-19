@@ -117,7 +117,7 @@ class Dataset(exob.Object):
                 test_string = "version https://git-lfs.github.com/spec/v1"
                 contents = f.read(len(test_string))
                 if contents == test_string:
-                    raise IOError("The file '{}' is a Git LFS placeholder. "
+                    raise OSError("The file '{}' is a Git LFS placeholder. "
                         "Open the the Exdir File with the Git LFS plugin or run "
                         "`git lfs fetch` first. ".format(self.data_filename))
                 else:
