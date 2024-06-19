@@ -65,9 +65,9 @@ class Dataset(exob.Object):
                     and self.meta["plugins"][plugin_name]["required"] == True
                     and plugin_name not in enabled_plugins):
                     raise Exception((
-                        "Plugin '{}' was used to write '{}', "
+                        f"Plugin '{plugin_name}' was used to write '{self.name}', "
                         "but is not enabled."
-                    ).format(plugin_name, self.name))
+                    ))
 
         plugins = self.plugin_manager.dataset_plugins.read_order
 
@@ -117,9 +117,9 @@ class Dataset(exob.Object):
                 test_string = "version https://git-lfs.github.com/spec/v1"
                 contents = f.read(len(test_string))
                 if contents == test_string:
-                    raise OSError("The file '{}' is a Git LFS placeholder. "
+                    raise OSError(f"The file '{self.data_filename}' is a Git LFS placeholder. "
                         "Open the the Exdir File with the Git LFS plugin or run "
-                        "`git lfs fetch` first. ".format(self.data_filename))
+                        "`git lfs fetch` first. ")
                 else:
                     raise e
 
@@ -265,8 +265,7 @@ class Dataset(exob.Object):
     def __repr__(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return "<Closed Exdir Dataset>"
-        return "<Exdir Dataset {} shape {} dtype {}>".format(
-            self.name, self.shape, self.dtype)
+        return f"<Exdir Dataset {self.name} shape {self.shape} dtype {self.dtype}>"
 
     @property
     def _data(self):

@@ -50,15 +50,15 @@ li.collapsibleListClosed{
 }
     """
 
-    script = """
+    script = f"""
     var node = document.getElementById('{ulid}');
     exdir.CollapsibleLists.applyTo(node);
-    """.format(ulid=ulid)
+    """
 
-    result = ("<style>{style}</style>"
-              "<ul id='{ulid}' class='collapsibleList'>{contents}</ul>"
-              "<script>{script}</script>"
-              "").format(style=style, ulid=ulid, contents=_build_tree(obj), script=script)
+    result = (f"<style>{style}</style>"
+              f"<ul id='{ulid}' class='collapsibleList'>{_build_tree(obj)}</ul>"
+              f"<script>{script}</script>"
+              "")
 
     return result
 
@@ -82,4 +82,4 @@ def _build_attrs_tree(key, value):
 
 
 def html_attrs(attributes):
-    return "<ul>{}</ul>".format(_build_attrs_tree("Attributes", attributes))
+    return f"<ul>{_build_attrs_tree('Attributes', attributes)}</ul>"

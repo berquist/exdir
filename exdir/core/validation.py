@@ -88,8 +88,8 @@ def _assert_valid_characters(name):
     for char in name_str:
         if char not in VALID_CHARACTERS:
             raise NameError(
-                "Name '{}' contains invalid character '{}'.\n"
-                "Valid characters are:\n{}".format(name_str, char, VALID_CHARACTERS)
+                f"Name '{name_str}' contains invalid character '{char}'.\n"
+                f"Valid characters are:\n{VALID_CHARACTERS}"
             )
 
 def unique(parent_path, name):
@@ -128,8 +128,8 @@ def thorough(parent_path, name):
     for item in os.listdir(str(parent_path)):
         if name_lower == item.lower():
             raise RuntimeError(
-                "A directory with name (case independent) '{}' already exists "
-                " and cannot be made according to the naming rule 'thorough'.".format(name)
+                f"A directory with name (case independent) '{name}' already exists "
+                " and cannot be made according to the naming rule 'thorough'."
             )
 
 

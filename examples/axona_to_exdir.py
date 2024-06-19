@@ -398,7 +398,7 @@ if __name__ == "__main__":
     # TODO for each channel_group, create LFP
 
     for channel_index in axona_folder._channel_indexes:
-        channel_group = processing.create_group("channel_group_{}".format(channel_index["group_id"]))
+        channel_group = processing.create_group(f"channel_group_{channel_index['group_id']}")
         if len(channel_index["analogsignals"]) > 0:
             lfp = channel_group.create_group("LFP")
 

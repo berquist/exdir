@@ -223,5 +223,4 @@ class Attribute:
     def __repr__(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return "<Attributes of closed Exdir object>"
-        return "Attributes of Exdir object '{}' at '{}'".format(
-            self.parent.name, id(self))
+        return f"Attributes of Exdir object '{self.parent.name}' at '{id(self)}'"

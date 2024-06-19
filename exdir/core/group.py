@@ -34,16 +34,12 @@ def _assert_data_shape_dtype_match(data, shape, dtype):
     if data is not None:
         if shape is not None and np.prod(shape) != np.prod(data.shape):
             raise ValueError(
-                "Provided shape and data.shape do not match: {} vs {}".format(
-                    shape, data.shape
-                )
+                f"Provided shape and data.shape do not match: {shape} vs {data.shape}"
             )
 
         if dtype is not None and not data.dtype == dtype:
             raise ValueError(
-                "Provided dtype and data.dtype do not match: {} vs {}".format(
-                    dtype, data.dtype
-                )
+                f"Provided dtype and data.dtype do not match: {dtype} vs {data.dtype}"
             )
         return
 
@@ -228,8 +224,8 @@ class Group(Object):
                 return current_object
             else:
                 raise TypeError(
-                    "An object with name '{}' already "
-                    "exists, but it is not a Group.".format(name)
+                    f"An object with name '{name}' already "
+                    "exists, but it is not a Group."
                 )
         elif group_directory.exists():
             raise FileExistsError(
@@ -290,9 +286,7 @@ class Group(Object):
 
         if not isinstance(current_object, ds.Dataset):
             raise TypeError(
-                "Incompatible object already exists: {}".format(
-                    current_object.__class__.__name__
-                )
+                f"Incompatible object already exists: {current_object.__class__.__name__}"
             )
 
         data, attrs, meta = ds._prepare_write(
@@ -302,31 +296,28 @@ class Group(Object):
             meta={}
         )
 
-
         # TODO verify proper attributes
 
         _assert_data_shape_dtype_match(data, shape, dtype)
         shape, dtype = _data_to_shape_and_dtype(data, shape, dtype)
 
+        print(f"shape: {shape} current_object.shape: {current_object.shape}")
         if not np.array_equal(shape, current_object.shape):
             raise TypeError(
-                "Shapes do not match (existing {} vs "
-                "new {})".format(current_object.shape, shape)
+                f"Shapes do not match (existing {current_object.shape} vs "
+                f"new {shape})"
             )
 
         if dtype != current_object.dtype:
             if exact:
                 raise TypeError(
                     "Datatypes do not exactly match "
-                    "existing {} vs new {})".format(current_object.dtype, dtype)
+                    f"existing {current_object.dtype} vs new {dtype})"
                 )
 
             if not np.can_cast(dtype, current_object.dtype):
                 raise TypeError(
-                    "Cannot safely cast from {} to {}".format(
-                        dtype,
-                        current_object.dtype
-                    )
+                    f"Cannot safely cast from {dtype} to {current_object.dtype}"
                 )
 
         return current_object
@@ -372,11 +363,9 @@ class Group(Object):
             return self[top_directory][sub_name]
 
         if name not in self:
-            error_message = "No such object: '{name}' in path '{path}'".format(
-                name=name,
-                path=str(self.directory)
+            raise KeyError(
+                f"No such object: '{name}' in path '{str(self.directory)}'"
             )
-            raise KeyError(error_message)
 
         directory = self.directory / path
 
@@ -403,11 +392,8 @@ class Group(Object):
             return self._group(name)
         else:
             error_string = (
-                "Object {name} has data type {type}.\n"
+                f"Object {name} has data type {meta_data[exob.EXDIR_METANAME][exob.TYPE_METANAME]}.\n"
                 "We cannot open objects of this type."
-            ).format(
-                name=name,
-                type=meta_data[exob.EXDIR_METANAME][exob.TYPE_METANAME]
             )
             raise NotImplementedError(error_string)
 

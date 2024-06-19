@@ -39,27 +39,17 @@ def _create_object_directory(directory, metadata):
         if metadata == _default_metadata(typename):
             # if it is the default, we know how to print it fast
             metadata_string = (''
-                '{exdir_meta}:\n'
-                '   {type_meta}: "{typename}"\n'
-                '   {version_meta}: {version}\n'
-            '').format(
-                exdir_meta=EXDIR_METANAME,
-                type_meta=TYPE_METANAME,
-                typename=typename,
-                version_meta=VERSION_METANAME,
-                version=1
-            )
+                f'{EXDIR_METANAME}:\n'
+                f'   {TYPE_METANAME}: "{typename}"\n'
+                f'   {VERSION_METANAME}: 1\n'
+            '')
         else:
             from io import StringIO
             with StringIO() as buf:
                 yaml.YAML(typ="safe", pure=True).dump(metadata, buf)
                 metadata_string = buf.getvalue()
 
-        try:
-            meta_file.write(metadata_string)
-        except TypeError:
-            # NOTE workaround for Python 2.7
-            meta_file.write(metadata_string.decode('utf8'))
+        meta_file.write(metadata_string)
 
 
 def _remove_object_directory(directory):
@@ -294,5 +284,4 @@ class Object:
     def __repr__(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return "<Closed Exdir Group>"
-        return "<Exdir Group '{}' (mode {})>".format(
-            self.directory, self.file.user_mode)
+        return f"<Exdir Group '{self.directory}' (mode {self.file.user_mode})>"
