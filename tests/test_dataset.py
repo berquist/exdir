@@ -598,7 +598,7 @@ def test_slice_of_length_zero(setup_teardown_file):
     f = setup_teardown_file[3]
 
     for i, shape in enumerate([(3, ), (2, 2, ), (2,  1, 5)]):
-        dset = f.create_dataset('x%d'%i, data=np.zeros(shape, np.int32))
+        dset = f.create_dataset(f"x{i}", data=np.zeros(shape, np.int32))
         assert dset.shape == shape
         out = dset[1:1]
         assert isinstance(out, np.ndarray)

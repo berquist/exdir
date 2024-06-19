@@ -64,10 +64,10 @@ class Dataset(exob.Object):
                 if ("required" in self.meta["plugins"][plugin_name]
                     and self.meta["plugins"][plugin_name]["required"] == True
                     and plugin_name not in enabled_plugins):
-                    raise Exception((
+                    raise Exception(
                         f"Plugin '{plugin_name}' was used to write '{self.name}', "
                         "but is not enabled."
-                    ))
+                    )
 
         plugins = self.plugin_manager.dataset_plugins.read_order
 
