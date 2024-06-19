@@ -483,8 +483,7 @@ class Group(Object):
         assert_file_open(self.file)
         # NOTE os.walk is way faster than os.listdir + os.path.isdir
         directories = next(os.walk(str(self.directory)))[1]
-        for name in sorted(directories):
-            yield name
+        yield from sorted(directories)
 
     def __len__(self):
         """

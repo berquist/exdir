@@ -179,8 +179,7 @@ class Attribute:
         return attrs
 
     def __iter__(self):
-        for key in self.keys():
-            yield key
+        yield from self.keys()
 
     @property
     def filename(self):
