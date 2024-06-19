@@ -1,12 +1,6 @@
 import subprocess
 import exdir.plugin_interface
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import sys
 
 class DatasetPlugin(exdir.plugin_interface.Dataset):

@@ -14,13 +14,7 @@
 
 import os
 import pytest
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import numpy as np
 try:
     from collections.abc import KeysView, ValuesView, ItemsView

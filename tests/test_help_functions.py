@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import six
 import quantities as pq
 import numpy as np
