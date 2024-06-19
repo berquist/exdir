@@ -1199,7 +1199,7 @@ def git_get_keywords(versionfile_abs: str) -> Dict[str, str]:
     # _version.py.
     keywords: Dict[str, str] = {}
     try:
-        with open(versionfile_abs, "r") as fobj:
+        with open(versionfile_abs) as fobj:
             for line in fobj:
                 if line.strip().startswith("git_refnames ="):
                     mo = re.search(r'=\s*"(.*)"', line)
@@ -1447,7 +1447,7 @@ def do_vcs_install(versionfile_source: str, ipy: Optional[str]) -> None:
         files.append(versioneer_file)
     present = False
     try:
-        with open(".gitattributes", "r") as fobj:
+        with open(".gitattributes") as fobj:
             for line in fobj:
                 if line.strip().startswith(versionfile_source):
                     if "export-subst" in line.strip().split()[1:]:
@@ -2199,7 +2199,7 @@ def do_setup() -> int:
     maybe_ipy: Optional[str] = ipy
     if os.path.exists(ipy):
         try:
-            with open(ipy, "r") as f:
+            with open(ipy) as f:
                 old = f.read()
         except OSError:
             old = ""
@@ -2231,7 +2231,7 @@ def scan_setup_py() -> int:
     found = set()
     setters = False
     errors = 0
-    with open("setup.py", "r") as f:
+    with open("setup.py") as f:
         for line in f.readlines():
             if "import versioneer" in line:
                 found.add("import")

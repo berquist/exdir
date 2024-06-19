@@ -84,7 +84,7 @@ class AxonaFile:
         if extension != ".set":
             raise ValueError("file extension must be '.set'")
 
-        with open(self._absolute_filename, "r") as f:
+        with open(self._absolute_filename) as f:
             text = f.read()
 
         params = parse_params(text)
