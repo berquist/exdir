@@ -1,5 +1,3 @@
- # -*- coding: utf-8 -*-
-
 """
 .. module:: exdir.core
 .. moduleauthor:: Svenn-Arne Dragly, Milad H. Mobarhan, Mikkel E. Lepperød, Simen Tennøe

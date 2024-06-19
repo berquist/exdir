@@ -1,4 +1,3 @@
-
 # Version: 0.29
 
 """The Versioneer - like a rocketeer, but for versions.

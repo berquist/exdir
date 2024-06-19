@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 This is the implementation of the NEO IO for the exdir format.
 Depends on: scipy
