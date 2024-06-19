@@ -1,7 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
-
 import sys
 import quantities as pq
 import os
