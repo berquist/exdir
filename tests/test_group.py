@@ -18,7 +18,7 @@ import numpy as np
 try:
     from collections.abc import KeysView, ValuesView, ItemsView
 except:
-    from collections import KeysView, ValuesView, ItemsView
+    from collections.abc import KeysView, ValuesView, ItemsView
 
 from exdir.core import Group, File, Dataset
 from exdir import validation as fv
