@@ -33,7 +33,8 @@ def test_assert_valid_name_minimal(setup_teardown_folder):
 
     exob._assert_valid_name("A", f)
 
-    exob._assert_valid_name("\n", f)
+    with pytest.raises(NameError):
+        exob._assert_valid_name("\n", f)
 
     exob._assert_valid_name(six.unichr(0x4500), f)
 
