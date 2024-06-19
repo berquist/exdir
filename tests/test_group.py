@@ -36,6 +36,17 @@ def test_group_init(setup_teardown_folder):
     assert group.name == "/test_object"
 
 
+def test_group_init_trailing(setup_teardown_folder):
+    group = Group(setup_teardown_folder[2], pathlib.PurePosixPath(""), "test_object2/", file=None)
+
+    assert group.root_directory == setup_teardown_folder[2]
+    assert group.object_name == "test_object2/"
+    assert group.parent_path == pathlib.PurePosixPath("")
+    assert group.file is None
+    assert group.relative_path == pathlib.PurePosixPath("test_object2")
+    assert group.name == "/test_object2"
+
+
 # New groups can be created via .create_group method
 
 def test_create_group(setup_teardown_file):
