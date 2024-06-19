@@ -18,7 +18,7 @@ except ImportError:
     import ruamel.yaml as yaml
 
 from exdir.core import Attribute, File
-import six
+
 
 def test_attr_init():
     attribute = Attribute("parent", "mode", "file")
@@ -212,7 +212,7 @@ def test_unicode(setup_teardown_file):
     """Access via Unicode string with non-ascii characters."""
     f = setup_teardown_file[3]
 
-    name = six.u("Omega") + six.unichr(0x03A9)
+    name = "Omega" + chr(0x03A9)
     f.attrs[name] = 42
     out = f.attrs[name]
     assert out == 42
@@ -250,10 +250,10 @@ def test_unicode_scalar(setup_teardown_file):
     """Storage of variable-length unicode strings (auto-creation)."""
     f = setup_teardown_file[3]
 
-    f.attrs["x"] = six.u("Hello") + six.unichr(0x2340) + six.u("!!")
+    f.attrs["x"] = "Hello" + chr(0x2340) + "!!"
     out = f.attrs["x"]
-    assert out == six.u("Hello") + six.unichr(0x2340) + six.u("!!")
-    assert type(out) == six.text_type
+    assert isinstance(out, str)
+    assert out == "Hello" + chr(0x2340) + "!!"
 
 
 def test_attrs(setup_teardown_file):

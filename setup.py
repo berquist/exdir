@@ -37,7 +37,6 @@ setup(
     install_requires=[
         "numpy>=1.20",
         "ruamel.yaml==0.17.21",
-        "six>=1.15",
     ],
     zip_safe=False,
 )
