@@ -197,15 +197,14 @@ def test_ascii(setup_teardown_file):
     assert out == 42
 
 # TODO verify that we don't want to support non-ASCII byte strings
-# NOTE fails with Python 2.7
-# def test_raw(setup_teardown_file):
-    # """Access via non-ASCII byte string."""
-    # f = setup_teardown_file[3]
+def test_raw(setup_teardown_file):
+    """Access via non-ASCII byte string."""
+    f = setup_teardown_file[3]
 
-    # name = b"non-ascii\xfe"
-    # f.attrs[name] = 42
-    # out = f.attrs[name]
-    # assert out == 42
+    name = b"non-ascii\xfe"
+    f.attrs[name] = 42
+    out = f.attrs[name]
+    assert out == 42
 
 
 def test_unicode(setup_teardown_file):
