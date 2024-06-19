@@ -181,7 +181,7 @@ class Group(Object):
 
         if name in self:
             raise FileExistsError(
-                "'{}' already exists in '{}'".format(name, self.name)
+                f"'{name}' already exists in '{self.name}'"
             )
 
         group_directory = self.directory / path
@@ -443,7 +443,7 @@ class Group(Object):
 
         if not isinstance(self[name], ds.Dataset):
             raise RuntimeError(
-                "Unable to assign value, {} already exists".format(name)
+                f"Unable to assign value, {name} already exists"
             )
 
         self[name].value = value

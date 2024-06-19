@@ -19,7 +19,7 @@ class DatasetPlugin(exdir.plugin_interface.Dataset):
             git_path = pathlib.Path(git_path.decode('utf-8').rstrip())
             relative_path = path.relative_to(git_path)
             if self.verbose:
-                print("Fetching Git LFS object for {}".format(relative_path))
+                print(f"Fetching Git LFS object for {relative_path}")
             command = ['git', '-c', 'lfs.fetchexclude=""', 'lfs', 'pull', '-I', str(relative_path)]
             process = subprocess.Popen(command, cwd=str(git_path), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if self.verbose:

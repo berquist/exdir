@@ -212,8 +212,8 @@ class Attribute:
             return "<Attributes of closed Exdir object>"
         string = ""
         for key in self:
-            string += "{}: {},".format(key, self[key])
-        return "Attribute({}, {{{}}})".format(self.parent.name, string)
+            string += f"{key}: {self[key]},"
+        return f"Attribute({self.parent.name}, {{{string}}})"
 
     def _repr_html_(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:

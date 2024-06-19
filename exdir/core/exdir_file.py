@@ -120,7 +120,7 @@ class File(Group):
         if already_exists:
             if not exob.is_nonraw_object_directory(directory):
                 raise RuntimeError(
-                    "Path '{}' already exists, but is not a valid exdir file.".format(directory)
+                    f"Path '{directory}' already exists, but is not a valid exdir file."
                 )
 
         should_create_directory = False

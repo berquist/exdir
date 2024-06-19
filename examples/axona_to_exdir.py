@@ -114,7 +114,7 @@ class AxonaFile:
                 for i in range(num_chans):
                     channel_id = self._channel_count + i
                     channel_ids.append(channel_id)
-                    channel_names.append("channel_{}_group_{}_internal_{}".format(channel_id, group_id, i))
+                    channel_names.append(f"channel_{channel_id}_group_{group_id}_internal_{i}")
 
                 channel_index = {"group_id": group_id,
                                  "channel_names": np.array(channel_names, dtype="S"),
@@ -139,7 +139,7 @@ class AxonaFile:
     def _channel_gain(self, channel_group_index, channel_index):
         # TODO split into two functions, one for mapping and one for gain lookup
         global_channel_index = channel_group_index * 4 + channel_index
-        param_name = "gain_ch_{}".format(global_channel_index)
+        param_name = f"gain_ch_{global_channel_index}"
         return float(self._params[param_name])
 
     def read_epoch():
@@ -319,7 +319,7 @@ class AxonaFile:
 
                     params["channel_id"] = eeg_original_channel_id
 
-                    gain = self._params["gain_ch_{}".format(eeg_final_channel_id)]
+                    gain = self._params[f"gain_ch_{eeg_final_channel_id}"]
 
                     signal = scale_analog_signal(data,
                                                  gain,
@@ -403,7 +403,7 @@ if __name__ == "__main__":
             lfp = channel_group.create_group("LFP")
 
             for index, analog_signal in enumerate(channel_index["analogsignals"]):
-                lfp_timeseries = lfp.require_group("LFP_timeseries_{}".format(index))
+                lfp_timeseries = lfp.require_group(f"LFP_timeseries_{index}")
                 lfp_timeseries.attrs["num_samples"] = 1  # TODO
                 lfp_timeseries.attrs["starting_time"] = {
                     "value": 0.0,  # TODO
@@ -417,7 +417,7 @@ if __name__ == "__main__":
             event_waveform = channel_group.create_group("EventWaveform")
 
             for index, spiketrain in enumerate(channel_index["spiketrains"]):
-                waveform_timeseries = event_waveform.create_group("waveform_timeseries_{}".format(index))
+                waveform_timeseries = event_waveform.create_group(f"waveform_timeseries_{index}")
                 waveform_timeseries.attrs["num_samples"] = spiketrain["num_spikes"]
                 waveform_timeseries.attrs["sample_length"] = spiketrain["samples_per_spike"]
                 waveform_timeseries.attrs["electrode_idx"] = channel_index["channel_ids"]

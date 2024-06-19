@@ -42,7 +42,7 @@ for experiment in f.keys():
         print(f[experiment]["voltage"])
         print("First voltage:", f[experiment]["voltage"][0])
     else:
-        print("No voltage values for: {}".format(experiment))
+        print(f"No voltage values for: {experiment}")
 
 
 

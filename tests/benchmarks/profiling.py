@@ -18,4 +18,4 @@ def setup_exdir():
 obj = setup_exdir()[0]
 
 for i in range(5000):
-    group = obj.create_group("group{}".format(i))
+    group = obj.create_group(f"group{i}")

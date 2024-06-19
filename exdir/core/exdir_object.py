@@ -32,7 +32,7 @@ def _create_object_directory(directory, metadata):
     valid_types = [DATASET_TYPENAME, FILE_TYPENAME, GROUP_TYPENAME]
     typename = metadata[EXDIR_METANAME][TYPE_METANAME]
     if typename not in valid_types:
-        raise ValueError("{typename} is not a valid typename".format(typename=typename))
+        raise ValueError(f"{typename} is not a valid typename")
     directory.mkdir()
     meta_filename = directory / META_FILENAME
     with meta_filename.open("w", encoding="utf-8") as meta_file:
@@ -229,7 +229,7 @@ class Object:
         _assert_valid_name(name, self)
         directory_name = self.directory / name
         if directory_name.exists():
-            raise FileExistsError("'{}' already exists in '{}'".format(name, self))
+            raise FileExistsError(f"'{name}' already exists in '{self}'")
         directory_name.mkdir()
         return Raw(
             root_directory=self.root_directory,
@@ -245,7 +245,7 @@ class Object:
         if directory_name.exists():
             if is_nonraw_object_directory(directory_name):
                 raise FileExistsError(
-                    "Directory '{}' already exists, but is not raw.".format(directory_name)
+                    f"Directory '{directory_name}' already exists, but is not raw."
                 )
             return Raw(
                 root_directory=self.root_directory,

@@ -9,9 +9,9 @@ def _build_tree(o):
     else:
         name = o.object_name
 
-    contents += "{} ({})".format(name, o.__class__.__name__)
+    contents += f"{name} ({o.__class__.__name__})"
     if isinstance(o, exdir.core.Dataset):
-        contents += "<ul><li>Shape: {}</li><li>Type: {}</li></ul>".format(o.shape, o.dtype)
+        contents += f"<ul><li>Shape: {o.shape}</li><li>Type: {o.dtype}</li></ul>"
     else:
         try:
             keys = o.keys()
@@ -19,7 +19,7 @@ def _build_tree(o):
             for a in keys:
                 inner_contents += _build_tree(o[a])
             if inner_contents != "":
-                contents += "<ul>{}</ul>".format(inner_contents)
+                contents += f"<ul>{inner_contents}</ul>"
         except AttributeError:
             pass
 
@@ -65,16 +65,16 @@ li.collapsibleListClosed{
 
 def _build_attrs_tree(key, value):
     contents = "<li>"
-    contents += "{}: ".format(key)
+    contents += f"{key}: "
     try:
         items = value.items()
         inner_contents = ""
         for subkey, subvalue in items:
             inner_contents += _build_attrs_tree(subkey, subvalue)
         if inner_contents != "":
-            contents += "<ul>{}</ul>".format(inner_contents)
+            contents += f"<ul>{inner_contents}</ul>"
     except AttributeError:
-        contents += "{}".format(value)
+        contents += f"{value}"
 
     contents += "</li>"
 

@@ -139,7 +139,7 @@ def add_large_dataset(obj):
 
 def create_many_objects(obj):
     for i in range(5000):
-        group = obj.create_group("group{}".format(i))
+        group = obj.create_group(f"group{i}")
         # data = np.zeros((10, 10, 10))
         # group.create_dataset("dataset{}".format(i), data=data)
 
@@ -155,9 +155,9 @@ def create_large_tree(obj, level=0):
     if level > 4:
         return
     for i in range(3):
-        group = obj.create_group("group_{}_{}".format(i, level))
+        group = obj.create_group(f"group_{i}_{level}")
         data = np.zeros((10, 10, 10))
-        group.create_dataset("dataset_{}_{}".format(i, level), data=data)
+        group.create_dataset(f"dataset_{i}_{level}", data=data)
         create_large_tree(group, level + 1)
 
 
