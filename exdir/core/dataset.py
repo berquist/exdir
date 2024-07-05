@@ -143,18 +143,6 @@ class Dataset(exob.Object):
 
         return
 
-    def set_data(self, data):
-        """
-        Warning
-        -------
-        Deprecated convenience function.
-        Use :code:`dataset.data = data` instead.
-        """
-        raise DeprecationWarning(
-            "set_data is deprecated. Use `dataset.data = data` instead."
-        )
-        self.value = data
-
     @property
     def data(self):
         """
