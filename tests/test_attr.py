@@ -165,26 +165,22 @@ def test_iter(setup_teardown_file):
         assert i in ["a", "b", "c"]
 
 
-# TODO uncomment as soon as __del__ is implemented
 # Deletion of attributes using __delitem__
-# def test_delete(setup_teardown_file):
-#     """Deletion via "del"."""
-#     f = setup_teardown_file[3]
-#
-#     f.attrs["a"] = 4.0
-#     assert "a" in f.attrs
-#     del f.attrs["a"]
-#     assert "a" not in f.attrs
-#
-#
-# def test_delete_exc(setup_teardown_file):
-#     """Attempt to delete missing item raises KeyError."""
-#     f = setup_teardown_file[3]
-#     with pytest.raises(KeyError):
-#         del f.attrs["a"]
+def test_delete(setup_teardown_file):
+    """Deletion via "del"."""
+    f = setup_teardown_file[3]
+
+    f.attrs["a"] = 4.0
+    assert "a" in f.attrs
+    del f.attrs["a"]
+    assert "a" not in f.attrs
 
 
-
+def test_delete_exc(setup_teardown_file):
+    """Attempt to delete missing item raises KeyError."""
+    f = setup_teardown_file[3]
+    with pytest.raises(KeyError):
+        del f.attrs["a"]
 
 # Attributes can be accessed via Unicode or byte strings
 

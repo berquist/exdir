@@ -88,6 +88,11 @@ class Attribute:
 
         self._set_data(attrs)
 
+    def __delitem__(self, name):
+        attrs = _open_or_create(self.filename)
+        del attrs[name]
+        self._set_data(attrs)
+
     def __contains__(self, name):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return False
