@@ -21,6 +21,14 @@ def _quote_strings(value):
     return value
 
 
+def _open_or_create(filename):
+    attrs = {}
+    if filename.exists():
+        with filename.open("r", encoding="utf-8") as meta_file:
+            attrs = yaml.YAML(typ="safe", pure=True).load(meta_file)
+    return attrs
+
+
 class Attribute:
     """
     The attribute object is a dictionary-like object that is used to access
@@ -44,7 +52,7 @@ class Attribute:
         self.path = path or []
 
     def __getitem__(self, name=None):
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
 
         if self.mode == self._Mode.ATTRIBUTES:
             meta = self.parent.meta.to_dict()
@@ -70,7 +78,7 @@ class Attribute:
             return attrs
 
     def __setitem__(self, name, value):
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
         key = name
         sub_attrs = attrs
 
@@ -83,7 +91,7 @@ class Attribute:
     def __contains__(self, name):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return False
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
         for i in self.path:
             attrs = attrs[i]
         return name in attrs
@@ -94,7 +102,7 @@ class Attribute:
         -------
         a new view of the Attribute's keys.
         """
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
         for i in self.path:
             attrs = attrs[i]
         return attrs.keys()
@@ -103,7 +111,7 @@ class Attribute:
         """
         Convert the Attribute into a standard Python dictionary.
         """
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
         for i in self.path:  # TODO check if this is necesary
             attrs = attrs[i]
 
@@ -126,7 +134,7 @@ class Attribute:
         -------
         a new view of the Attribute's items.
         """
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
         for i in self.path:
             attrs = attrs[i]
         return attrs.items()
@@ -137,7 +145,7 @@ class Attribute:
         -------
         a new view of the Attribute's values.
         """
-        attrs = self._open_or_create()
+        attrs = _open_or_create(self.filename)
         for i in self.path:
             attrs = attrs[i]
         return attrs.values()
@@ -168,15 +176,6 @@ class Attribute:
                 attribute_data_quoted,
                 attribute_file,
             )
-
-    # TODO only needs filename, make into free function
-    def _open_or_create(self):
-        assert_file_open(self.file)
-        attrs = {}
-        if self.filename.exists():  # NOTE str for Python 3.5 support
-            with self.filename.open("r", encoding="utf-8") as meta_file:
-                attrs = yaml.YAML(typ="safe", pure=True).load(meta_file)
-        return attrs
 
     def __iter__(self):
         yield from self.keys()
