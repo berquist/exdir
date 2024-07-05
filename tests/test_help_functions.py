@@ -214,3 +214,26 @@ def test_open_object(setup_teardown_file):
     loaded_grp = exob.open_object(path)
 
     assert grp2 == loaded_grp
+
+
+def test_data_to_shape_and_dtype():
+    data_to_shape_and_dtype = exdir.core.group._data_to_shape_and_dtype
+
+    g = np.random.Generator(np.random.PCG64())
+    dim = (2, 3)
+    x = g.random(dim, dtype=np.float64)
+    z = x * (1 + 1j)
+
+    default_dtype = np.float32
+
+    assert data_to_shape_and_dtype(None, None, None) == (None, np.float32)
+    assert data_to_shape_and_dtype(None, None, np.int32) == (None, np.int32)
+    assert data_to_shape_and_dtype(None, dim, None) == (dim, np.float32)
+    assert data_to_shape_and_dtype(None, dim, np.complex128) == (dim, np.complex128)
+    assert data_to_shape_and_dtype(x, None, None) == (dim, np.float64)
+    assert data_to_shape_and_dtype(z, None, None) == (dim, np.complex128)
+
+    # These test the implementation but show that it is possible to ignore
+    # passed-in data.
+    # assert data_to_shape_and_dtype(x, (5, 9), None) == ((5, 9), np.float64)
+    # assert data_to_shape_and_dtype(x, None, np.float16) == (dim, np.float16)

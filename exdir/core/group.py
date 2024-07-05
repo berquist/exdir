@@ -25,6 +25,7 @@ def _data_to_shape_and_dtype(data, shape, dtype):
             shape = data.shape
         if dtype is None:
             dtype = data.dtype
+        _assert_data_shape_dtype_match(data, shape, dtype)
         return shape, dtype
     if dtype is None:
         dtype = np.float32
