@@ -68,13 +68,14 @@ class File(Group):
         directory = pathlib.Path(directory) #.resolve()
         if directory.suffix != ".exdir":
             directory = directory.with_suffix(directory.suffix + ".exdir")
-        self.user_mode = mode = mode or 'a'
+        mode = mode or 'a'
         recognized_modes = ['a', 'r', 'r+', 'w', 'w-', 'x']
         if mode not in recognized_modes:
             raise ValueError(
                 f"IO mode {mode} not recognized, "
                 f"mode must be one of {recognized_modes}"
             )
+        self.user_mode = mode
 
         self.plugin_manager = exdir.plugin_interface.plugin_interface.Manager(plugins)
 
@@ -135,10 +136,7 @@ class File(Group):
 
         should_create_directory = False
 
-        if mode == "r":
-            if not already_exists:
-                raise RuntimeError("File " + str(directory) + " does not exist.")
-        elif mode == "r+":
+        if mode in ("r", "r+"):
             if not already_exists:
                 raise RuntimeError("File " + str(directory) + " does not exist.")
         elif mode == "w":
@@ -151,7 +149,7 @@ class File(Group):
                         "by default. Add allow_remove=True to override."
                     )
             should_create_directory = True
-        elif mode == "w-" or mode == "x":
+        elif mode in ("w-", "x"):
             if already_exists:
                 raise RuntimeError("File " + str(directory) + " already exists.")
             should_create_directory = True
