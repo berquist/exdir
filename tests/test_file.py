@@ -13,6 +13,7 @@
 
 import pytest
 import pathlib
+import re
 
 from exdir.core import File, Group
 from exdir.core.exdir_object import _create_object_directory, is_nonraw_object_directory, DATASET_TYPENAME, FILE_TYPENAME
@@ -22,6 +23,18 @@ from exdir import validation as fv
 import numpy as np
 
 from conftest import remove
+
+
+RE_ALREADY_EXISTS = re.compile(r"File [/\-\.\w]* already exists\.")
+RE_ALREADY_EXISTS_TREE = re.compile(r"File [/\-\.\w]* already exists\. We won't delete the entire tree by default\. Add allow_remove=True to override\.")
+RE_EXISTING_THOROUGH = re.compile(r"A directory with name \(case independent\) '[\w\.]+' already exists  and cannot be made according to the naming rule 'thorough'\.")
+RE_IO_MODE_CANNOT_CHANGE_DATA = re.compile("Cannot change data on file in read only 'r' mode")
+RE_IO_MODE_FILE_DOES_NOT_EXIST = re.compile(r"File [/\-\.\w]* does not exist\.")
+RE_IO_MODE_FILE_READ_ONLY = re.compile("Cannot change data on file in read only 'r' mode")
+RE_IO_MODE_UNRECOGNIZED = re.compile(r"IO mode [\w\s]+ not recognized, mode must be one of \['a', 'r', 'r\+', 'w', 'w\-', 'x'\]")
+RE_NAME_RULE = re.compile(r'IO name rule "[\w\s]+" not recognized, name rule must be one of "strict", "simple", "thorough", "none"')
+RE_PATH_ALREADY_EXISTS = re.compile(r"Path '[/\-\.\w]*' already exists, but is not a valid exdir file\.")
+RE_VALIDATE_NAME_STRICT = re.compile(r"Name '.+' contains invalid character '[^a-z0-9_\-\.]'\.\nValid characters are:\nabcdefghijklmnopqrstuvwxyz1234567890_\-\.")
 
 
 def test_file_init(setup_teardown_folder):
@@ -48,25 +61,25 @@ def test_file_init(setup_teardown_folder):
     remove(setup_teardown_folder[1])
 
     setup_teardown_folder[1].mkdir(parents=True)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_PATH_ALREADY_EXISTS):
         f = File(setup_teardown_folder[1], mode="w")
 
     remove(setup_teardown_folder[1])
 
     _create_object_directory(pathlib.Path(setup_teardown_folder[1]), exob._default_metadata(DATASET_TYPENAME))
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_ALREADY_EXISTS_TREE):
         f = File(setup_teardown_folder[1], mode="w")
 
     remove(setup_teardown_folder[1])
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_IO_MODE_FILE_DOES_NOT_EXIST):
         f = File(setup_teardown_folder[1], mode="r")
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_IO_MODE_FILE_DOES_NOT_EXIST):
         f = File(setup_teardown_folder[1], mode="r+")
 
     _create_object_directory(pathlib.Path(setup_teardown_folder[1]), exob._default_metadata(FILE_TYPENAME))
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_ALREADY_EXISTS_TREE):
         f = File(setup_teardown_folder[1], mode="w")
 
     remove(setup_teardown_folder[1])
@@ -77,13 +90,13 @@ def test_file_init(setup_teardown_folder):
 
     _create_object_directory(pathlib.Path(setup_teardown_folder[1]), exob._default_metadata(FILE_TYPENAME))
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_ALREADY_EXISTS):
         f = File(setup_teardown_folder[1], mode="w-")
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_ALREADY_EXISTS):
         f = File(setup_teardown_folder[1], mode="x")
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=RE_IO_MODE_UNRECOGNIZED):
         f = File(setup_teardown_folder[1], mode="not existing")
 
 
@@ -97,7 +110,7 @@ def test_create(setup_teardown_folder):
     f = File(setup_teardown_folder[1], 'w', allow_remove=True)
     assert 'foo' not in f
     f.close()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_ALREADY_EXISTS_TREE):
         f = File(setup_teardown_folder[1], 'w')
 
 
@@ -107,7 +120,7 @@ def test_create_exclusive(setup_teardown_folder):
     f = File(setup_teardown_folder[1], 'w-')
     assert isinstance(f, File)
     f.close()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_ALREADY_EXISTS):
         File(setup_teardown_folder[1], 'w-')
 
 
@@ -133,7 +146,7 @@ def test_readonly(setup_teardown_folder):
     assert not f
     f = File(setup_teardown_folder[1], 'r')
     assert isinstance(f, File)
-    with pytest.raises(IOError):
+    with pytest.raises(IOError, match=RE_IO_MODE_CANNOT_CHANGE_DATA):
         f.create_group('foo')
         f.create_dataset("bar", (2))
     f.close()
@@ -155,15 +168,15 @@ def test_readwrite(setup_teardown_folder):
 def test_nonexistent_file(setup_teardown_folder):
     """Modes 'r' and 'r+' do not create files."""
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_IO_MODE_FILE_DOES_NOT_EXIST):
         File(setup_teardown_folder[1], 'r')
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_IO_MODE_FILE_DOES_NOT_EXIST):
         File(setup_teardown_folder[1], 'r+')
 
 
 def test_invalid_mode(setup_teardown_folder):
     """Invalid modes raise ValueError."""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=RE_IO_MODE_UNRECOGNIZED):
         File(setup_teardown_folder[1], 'Error mode')
 
 
@@ -178,9 +191,9 @@ def test_validate_name_thorough(setup_teardown_folder):
     f = File(setup_teardown_folder[0] / "test.exdir", name_validation=fv.thorough)
     f.close()
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_EXISTING_THOROUGH):
         File(setup_teardown_folder[0] / "Test.exdir", name_validation=fv.thorough)
-    with pytest.raises(NameError):
+    with pytest.raises(NameError, match=RE_VALIDATE_NAME_STRICT):
         File(setup_teardown_folder[0] / "tes#.exdir", name_validation=fv.thorough)
 
 
@@ -189,14 +202,14 @@ def test_validate_name_strict(setup_teardown_folder):
     f = File(setup_teardown_folder[1], name_validation=fv.strict)
     f.close()
 
-    with pytest.raises(NameError):
+    with pytest.raises(NameError, match=RE_VALIDATE_NAME_STRICT):
         File(setup_teardown_folder[1].with_suffix(".exdirA"), name_validation=fv.strict)
 
 
 def test_validate_name_error(setup_teardown_folder):
     """Test naming rule with error."""
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=RE_NAME_RULE):
         File(setup_teardown_folder[1], name_validation='Error rule')
 
 
@@ -215,7 +228,7 @@ def test_opening_with_different_validate_name(setup_teardown_folder):
 
     # TODO changing name validation should result in warning/error
     f = File(setup_teardown_folder[1], "a", name_validation=fv.thorough)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError, match=RE_EXISTING_THOROUGH):
         f.create_group("aaa")
     f.close()
 
@@ -262,7 +275,7 @@ def test_open(setup_teardown_file):
 def test_open_mode(setup_teardown_folder):
     # must exist
     for mode in ["r+", "r"]:
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError, match=RE_IO_MODE_FILE_DOES_NOT_EXIST):
             f = File(setup_teardown_folder[1], mode)
     # create if not exist
     for mode in ["a", "w", "w-"]:
@@ -285,7 +298,7 @@ def test_open_mode(setup_teardown_folder):
 
     # read only, can not write
     f = File(setup_teardown_folder[1], 'r')
-    with pytest.raises(IOError):
+    with pytest.raises(IOError, match=RE_IO_MODE_FILE_READ_ONLY):
         f.require_dataset('dset', np.arange(10))
         f.attrs['can_not_write'] = 42
         f.create_group('mygroup')
