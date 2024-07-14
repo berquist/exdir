@@ -62,7 +62,7 @@ class Dataset(exob.Object):
         if "plugins" in self.meta:
             for plugin_name in self.meta["plugins"]:
                 if ("required" in self.meta["plugins"][plugin_name]
-                    and self.meta["plugins"][plugin_name]["required"] == True
+                    and self.meta["plugins"][plugin_name]["required"]
                     and plugin_name not in enabled_plugins):
                     raise Exception(
                         f"Plugin '{plugin_name}' was used to write '{self.name}', "
