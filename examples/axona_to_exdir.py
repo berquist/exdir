@@ -1,7 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import with_statement
-
 import sys
 import quantities as pq
 import os
@@ -43,7 +39,7 @@ def parse_header_and_leave_cursor(file_handle):
         header += str(byte, 'latin-1')
 
         if not byte:
-            raise IOError("Hit end of file '" + eeg_filename + "'' before '" + search_string + "' found.")
+            raise OSError("Hit end of file '" + eeg_filename + "'' before '" + search_string + "' found.")
 
         if header[-len(search_string):] == search_string:
             break
@@ -88,7 +84,7 @@ class AxonaFile:
         if extension != ".set":
             raise ValueError("file extension must be '.set'")
 
-        with open(self._absolute_filename, "r") as f:
+        with open(self._absolute_filename) as f:
             text = f.read()
 
         params = parse_params(text)
@@ -118,7 +114,7 @@ class AxonaFile:
                 for i in range(num_chans):
                     channel_id = self._channel_count + i
                     channel_ids.append(channel_id)
-                    channel_names.append("channel_{}_group_{}_internal_{}".format(channel_id, group_id, i))
+                    channel_names.append(f"channel_{channel_id}_group_{group_id}_internal_{i}")
 
                 channel_index = {"group_id": group_id,
                                  "channel_names": np.array(channel_names, dtype="S"),
@@ -143,7 +139,7 @@ class AxonaFile:
     def _channel_gain(self, channel_group_index, channel_index):
         # TODO split into two functions, one for mapping and one for gain lookup
         global_channel_index = channel_group_index * 4 + channel_index
-        param_name = "gain_ch_{}".format(global_channel_index)
+        param_name = f"gain_ch_{global_channel_index}"
         return float(self._params[param_name])
 
     def read_epoch():
@@ -217,7 +213,7 @@ class AxonaFile:
         # TODO store attributes, such as pixels_per_metre
         pos_filename = os.path.join(self._path, self._base_filename+".pos")
         if not os.path.exists(pos_filename):
-            raise IOError("'.pos' file not found:" + pos_filename)
+            raise OSError("'.pos' file not found:" + pos_filename)
 
         with open(pos_filename, "rb") as f:
             params = parse_header_and_leave_cursor(f)
@@ -296,7 +292,7 @@ class AxonaFile:
                 elif file_type == "egf":
                     sample_count = int(params["num_EGF_samples"])
                 else:
-                    raise IOError("Unknown file type. Should be .eeg or .efg.")
+                    raise OSError("Unknown file type. Should be .eeg or .efg.")
 
                 sample_rate_split = params["sample_rate"].split(" ")
                 bytes_per_sample = params["bytes_per_sample"]
@@ -323,7 +319,7 @@ class AxonaFile:
 
                     params["channel_id"] = eeg_original_channel_id
 
-                    gain = self._params["gain_ch_{}".format(eeg_final_channel_id)]
+                    gain = self._params[f"gain_ch_{eeg_final_channel_id}"]
 
                     signal = scale_analog_signal(data,
                                                  gain,
@@ -402,12 +398,12 @@ if __name__ == "__main__":
     # TODO for each channel_group, create LFP
 
     for channel_index in axona_folder._channel_indexes:
-        channel_group = processing.create_group("channel_group_{}".format(channel_index["group_id"]))
+        channel_group = processing.create_group(f"channel_group_{channel_index['group_id']}")
         if len(channel_index["analogsignals"]) > 0:
             lfp = channel_group.create_group("LFP")
 
             for index, analog_signal in enumerate(channel_index["analogsignals"]):
-                lfp_timeseries = lfp.require_group("LFP_timeseries_{}".format(index))
+                lfp_timeseries = lfp.require_group(f"LFP_timeseries_{index}")
                 lfp_timeseries.attrs["num_samples"] = 1  # TODO
                 lfp_timeseries.attrs["starting_time"] = {
                     "value": 0.0,  # TODO
@@ -421,7 +417,7 @@ if __name__ == "__main__":
             event_waveform = channel_group.create_group("EventWaveform")
 
             for index, spiketrain in enumerate(channel_index["spiketrains"]):
-                waveform_timeseries = event_waveform.create_group("waveform_timeseries_{}".format(index))
+                waveform_timeseries = event_waveform.create_group(f"waveform_timeseries_{index}")
                 waveform_timeseries.attrs["num_samples"] = spiketrain["num_spikes"]
                 waveform_timeseries.attrs["sample_length"] = spiketrain["samples_per_spike"]
                 waveform_timeseries.attrs["electrode_idx"] = channel_index["channel_ids"]

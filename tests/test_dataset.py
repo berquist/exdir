@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # This file is part of Exdir, the Experimental Directory Structure.
 #
 # Copyright 2017 Simen Tennøe
@@ -219,7 +217,7 @@ def test_create_fillval(setup_teardown_file):
 
 
 
-def test_compound(setup_teardown_file):
+def test_compound_fill(setup_teardown_file):
     """Fill value works with compound types."""
     f = setup_teardown_file[3]
     grp = f.create_group("test")
@@ -239,8 +237,8 @@ def test_exc(setup_teardown_file):
 
 
 def test_string(setup_teardown_file):
-    """Assignement of fixed-length byte string produces a fixed-length
-    ascii dataset """
+    """Assignment of fixed-length byte string produces a fixed-length
+    ASCII dataset"""
     f = setup_teardown_file[3]
     grp = f.create_group("test")
 
@@ -313,7 +311,7 @@ def test_trailing_slash(setup_teardown_file):
 
 
 # Feature: Compound types correctly round-trip
-def test_compund(setup_teardown_file):
+def test_compound(setup_teardown_file):
     """Compound types are read back in correct order."""
     f = setup_teardown_file[3]
     grp = f.create_group("test")
@@ -506,7 +504,7 @@ def test_read(setup_teardown_file):
     assert out.shape == (3, 3)
 
 def test_write_broadcast(setup_teardown_file):
-    """Array fill from constant is  supported."""
+    """Array fill from constant is supported."""
     f = setup_teardown_file[3]
 
     dt = np.dtype('(3,)i')
@@ -570,7 +568,7 @@ def test_slice_zero_length_dimension(setup_teardown_file):
     f = setup_teardown_file[3]
 
     for i, shape in enumerate([(0,), (0, 3), (0, 2, 1)]):
-        dset = f.create_dataset('x%d'%i, shape, dtype=np.int32)
+        dset = f.create_dataset(f"x{i}", shape, dtype=np.int32)
         assert dset.shape == shape
         out = dset[...]
         assert isinstance(out, np.ndarray)
@@ -589,7 +587,7 @@ def test_slice_other_dimension(setup_teardown_file):
     f = setup_teardown_file[3]
 
     for i, shape in enumerate([(3, 0), (1, 2, 0), (2, 0, 1)]):
-        dset = f.create_dataset('x%d'%i, shape, dtype=np.int32)
+        dset = f.create_dataset(f"x{i}", shape, dtype=np.int32)
         assert dset.shape == shape
         out = dset[:1]
         assert isinstance(out, np.ndarray)
@@ -600,7 +598,7 @@ def test_slice_of_length_zero(setup_teardown_file):
     f = setup_teardown_file[3]
 
     for i, shape in enumerate([(3, ), (2, 2, ), (2,  1, 5)]):
-        dset = f.create_dataset('x%d'%i, data=np.zeros(shape, np.int32))
+        dset = f.create_dataset(f"x{i}", data=np.zeros(shape, np.int32))
         assert dset.shape == shape
         out = dset[1:1]
         assert isinstance(out, np.ndarray)

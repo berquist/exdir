@@ -228,16 +228,16 @@ def solve_plugin_order(plugins, read_mode=False):
         queue = new_queue
 
     # remove missing plugins from maps
-    plugin_map = dict(
-        (name, v)
+    plugin_map = {
+        name: v
         for name, v in plugin_map.items()
         if name in needed_plugins
-    )
-    dependency_map = dict(
-        (name, v)
+    }
+    dependency_map = {
+        name: v
         for name, v in dependency_map.items()
         if name in needed_plugins
-    )
+    }
 
     ordered_plugins = []
     while dependency_map:

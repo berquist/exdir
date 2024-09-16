@@ -1,12 +1,6 @@
 import subprocess
 import exdir.plugin_interface
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import sys
 
 class DatasetPlugin(exdir.plugin_interface.Dataset):
@@ -25,7 +19,7 @@ class DatasetPlugin(exdir.plugin_interface.Dataset):
             git_path = pathlib.Path(git_path.decode('utf-8').rstrip())
             relative_path = path.relative_to(git_path)
             if self.verbose:
-                print("Fetching Git LFS object for {}".format(relative_path))
+                print(f"Fetching Git LFS object for {relative_path}")
             command = ['git', '-c', 'lfs.fetchexclude=""', 'lfs', 'pull', '-I', str(relative_path)]
             process = subprocess.Popen(command, cwd=str(git_path), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if self.verbose:
@@ -43,7 +37,7 @@ class DatasetPlugin(exdir.plugin_interface.Dataset):
 
 class Plugin(exdir.plugin_interface.Plugin):
     def __init__(self, verbose=False):
-        super(Plugin, self).__init__("git_lfs", dataset_plugins=[DatasetPlugin(verbose)])
+        super().__init__("git_lfs", dataset_plugins=[DatasetPlugin(verbose)])
 
 def plugins():
     return _plugins(verbose=False)

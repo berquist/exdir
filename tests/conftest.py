@@ -1,16 +1,8 @@
-from __future__ import print_function
-
 import pytest
 import shutil
 import os
 import h5py
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import time
 
 import exdir

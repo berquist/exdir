@@ -179,8 +179,7 @@ class Attribute:
         return attrs
 
     def __iter__(self):
-        for key in self.keys():
-            yield key
+        yield from self.keys()
 
     @property
     def filename(self):
@@ -212,8 +211,8 @@ class Attribute:
             return "<Attributes of closed Exdir object>"
         string = ""
         for key in self:
-            string += "{}: {},".format(key, self[key])
-        return "Attribute({}, {{{}}})".format(self.parent.name, string)
+            string += f"{key}: {self[key]},"
+        return f"Attribute({self.parent.name}, {{{string}}})"
 
     def _repr_html_(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
@@ -223,5 +222,4 @@ class Attribute:
     def __repr__(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return "<Attributes of closed Exdir object>"
-        return "Attributes of Exdir object '{}' at '{}'".format(
-            self.parent.name, id(self))
+        return f"Attributes of Exdir object '{self.parent.name}' at '{id(self)}'"

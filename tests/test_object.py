@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # This file is part of Exdir, the Experimental Directory Structure.
 #
@@ -14,13 +13,7 @@
 
 import pytest
 import os
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import exdir
 try:
     import ruamel_yaml as yaml

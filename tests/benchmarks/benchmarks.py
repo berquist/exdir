@@ -11,7 +11,7 @@ for i in range(200):
     one_hundred_attributes["hello" + str(i)] = "world"
 
 def benchmark(name, target, setup=None, teardown=None, iterations=1):
-    print(("Running {name}...").format(name=name))
+    print(f"Running {name}...")
 
     total_time = 0
     setup_teardown_start = time.time()
@@ -29,18 +29,12 @@ def benchmark(name, target, setup=None, teardown=None, iterations=1):
     total_setup_teardown = setup_teardown_end - setup_teardown_start
 
     output = (
-        "{name}\n" +
+        f"{name}\n" +
         ("-" * len(name)) + "\n" +
-        "Iterations:\n{iterations}\n" +
-        "Total time:\n{total_time}\n" +
-        "Total time (iterations + setup/teardown):\n{total_setup_teardown}\n" +
-        "Mean:\n{mean}\n"
-    ).format(
-        name=name,
-        iterations=iterations,
-        total_time=total_time,
-        total_setup_teardown=total_setup_teardown,
-        mean=total_time / iterations
+        f"Iterations:\n{iterations}\n" +
+        f"Total time:\n{total_time}\n" +
+        f"Total time (iterations + setup/teardown):\n{total_setup_teardown}\n" +
+        f"Mean:\n{total_time / iterations}\n"
     )
 
     print(output)
@@ -139,9 +133,9 @@ def add_large_dataset(obj):
 
 def create_many_objects(obj):
     for i in range(5000):
-        group = obj.create_group("group{}".format(i))
+        group = obj.create_group(f"group{i}")
         # data = np.zeros((10, 10, 10))
-        # group.create_dataset("dataset{}".format(i), data=data)
+        # group.create_dataset(f"dataset{i}", data=data)
 
 
 def iterate_objects(obj):
@@ -155,9 +149,9 @@ def create_large_tree(obj, level=0):
     if level > 4:
         return
     for i in range(3):
-        group = obj.create_group("group_{}_{}".format(i, level))
+        group = obj.create_group(f"group_{i}_{level}")
         data = np.zeros((10, 10, 10))
-        group.create_dataset("dataset_{}_{}".format(i, level), data=data)
+        group.create_dataset(f"dataset_{i}_{level}", data=data)
         create_large_tree(group, level + 1)
 
 

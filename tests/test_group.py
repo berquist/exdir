@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # This file is part of Exdir, the Experimental Directory Structure.
 #
@@ -14,18 +13,12 @@
 
 import os
 import pytest
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import numpy as np
 try:
     from collections.abc import KeysView, ValuesView, ItemsView
 except:
-    from collections import KeysView, ValuesView, ItemsView
+    from collections.abc import KeysView, ValuesView, ItemsView
 
 from exdir.core import Group, File, Dataset
 from exdir import validation as fv

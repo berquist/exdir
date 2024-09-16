@@ -38,7 +38,7 @@ class Dataset(exob.Object):
         an existing dataset, which is different from the behavior in h5py.
     """
     def __init__(self, root_directory, parent_path, object_name, file):
-        super(Dataset, self).__init__(
+        super().__init__(
             root_directory=root_directory,
             parent_path=parent_path,
             object_name=object_name,
@@ -64,10 +64,10 @@ class Dataset(exob.Object):
                 if ("required" in self.meta["plugins"][plugin_name]
                     and self.meta["plugins"][plugin_name]["required"] == True
                     and plugin_name not in enabled_plugins):
-                    raise Exception((
-                        "Plugin '{}' was used to write '{}', "
+                    raise Exception(
+                        f"Plugin '{plugin_name}' was used to write '{self.name}', "
                         "but is not enabled."
-                    ).format(plugin_name, self.name))
+                    )
 
         plugins = self.plugin_manager.dataset_plugins.read_order
 
@@ -113,13 +113,13 @@ class Dataset(exob.Object):
             self.file._open_datasets[self.name] = self
         except ValueError as e:
             # Could be that it is a Git LFS file. Let's see if that is the case and warn if so.
-            with open(self.data_filename, "r", encoding="utf-8") as f:
+            with open(self.data_filename, encoding="utf-8") as f:
                 test_string = "version https://git-lfs.github.com/spec/v1"
                 contents = f.read(len(test_string))
                 if contents == test_string:
-                    raise IOError("The file '{}' is a Git LFS placeholder. "
+                    raise OSError(f"The file '{self.data_filename}' is a Git LFS placeholder. "
                         "Open the the Exdir File with the Git LFS plugin or run "
-                        "`git lfs fetch` first. ".format(self.data_filename))
+                        "`git lfs fetch` first. ")
                 else:
                     raise e
 
@@ -265,8 +265,7 @@ class Dataset(exob.Object):
     def __repr__(self):
         if self.file.io_mode == OpenMode.FILE_CLOSED:
             return "<Closed Exdir Dataset>"
-        return "<Exdir Dataset {} shape {} dtype {}>".format(
-            self.name, self.shape, self.dtype)
+        return f"<Exdir Dataset {self.name} shape {self.shape} dtype {self.dtype}>"
 
     @property
     def _data(self):

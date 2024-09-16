@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-from setuptools import setup
-import os
-
 from setuptools import setup, find_packages
 import versioneer
 
 
-long_description = open("README.md", encoding="utf-8").read()
-
-install_requires = []
+with open("README.md", encoding="utf-8") as handle:
+    long_description = handle.read()
 
 setup(
     name="exdir",
@@ -38,7 +33,7 @@ setup(
     install_requires=[
         "numpy>=1.20",
         "ruamel.yaml==0.17.21",
-        "six>=1.15",
     ],
+    python_requires=">=3.7",
     zip_safe=False,
 )

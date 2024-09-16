@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # exdir documentation build configuration file, created by
 # sphinx-quickstart on Fri Feb  3 09:52:17 2017.

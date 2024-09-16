@@ -1,14 +1,4 @@
-# -*- coding: utf-8 -*-
-
-import os
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
-import six
+import pathlib
 import quantities as pq
 import numpy as np
 import pytest
@@ -36,7 +26,7 @@ def test_assert_valid_name_minimal(setup_teardown_folder):
     with pytest.raises(NameError):
         exob._assert_valid_name("\n", f)
 
-    exob._assert_valid_name(six.unichr(0x4500), f)
+    exob._assert_valid_name(chr(0x4500), f)
 
     with pytest.raises(NameError):
         exob._assert_valid_name(exob.META_FILENAME, f)
@@ -60,7 +50,7 @@ def test_assert_valid_name_thorough(setup_teardown_folder):
         exob._assert_valid_name("\n", f)
 
     with pytest.raises(NameError):
-        exob._assert_valid_name(six.unichr(0x4500), f)
+        exob._assert_valid_name(chr(0x4500), f)
 
     with pytest.raises(NameError):
         exob._assert_valid_name(exob.META_FILENAME, f)
@@ -87,7 +77,7 @@ def test_assert_valid_name_none(setup_teardown_folder):
     invalid_name = "\n"
     exob._assert_valid_name(invalid_name, f)
 
-    invalid_name = six.unichr(0x4500)
+    invalid_name = chr(0x4500)
     exob._assert_valid_name(invalid_name, f)
 
     exob._assert_valid_name(exob.META_FILENAME, f)

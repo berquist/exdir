@@ -1,13 +1,7 @@
 import os
 import shutil
 import weakref
-try:
-    import pathlib
-except ImportError as e:
-    try:
-        import pathlib2 as pathlib
-    except ImportError:
-        raise e
+import pathlib
 import warnings
 
 import exdir
@@ -78,8 +72,8 @@ class File(Group):
         recognized_modes = ['a', 'r', 'r+', 'w', 'w-', 'x']
         if mode not in recognized_modes:
             raise ValueError(
-                "IO mode {} not recognized, "
-                "mode must be one of {}".format(mode, recognized_modes)
+                f"IO mode {mode} not recognized, "
+                f"mode must be one of {recognized_modes}"
             )
 
         self.plugin_manager = exdir.plugin_interface.plugin_interface.Manager(plugins)
@@ -97,9 +91,9 @@ class File(Group):
                 name_validation = validation.none
             else:
                 raise ValueError(
-                    'IO name rule "{}" not recognized, '
+                    f'IO name rule "{name_validation}" not recognized, '
                     'name rule must be one of "strict", "simple", '
-                    '"thorough", "none"'.format(name_validation)
+                    '"thorough", "none"'
                 )
 
             warnings.warn(
@@ -126,7 +120,7 @@ class File(Group):
         if already_exists:
             if not exob.is_nonraw_object_directory(directory):
                 raise RuntimeError(
-                    "Path '{}' already exists, but is not a valid exdir file.".format(directory)
+                    f"Path '{directory}' already exists, but is not a valid exdir file."
                 )
 
         should_create_directory = False
@@ -143,8 +137,8 @@ class File(Group):
                     shutil.rmtree(str(directory))  # NOTE str needed for Python 3.5
                 else:
                     raise RuntimeError(
-                        "File {} already exists. We won't delete the entire tree "
-                        "by default. Add allow_remove=True to override.".format(directory)
+                        f"File {directory} already exists. We won't delete the entire tree "
+                        "by default. Add allow_remove=True to override."
                     )
             should_create_directory = True
         elif mode == "w-" or mode == "x":
@@ -227,5 +221,4 @@ class File(Group):
     def __repr__(self):
         if self.io_mode == OpenMode.FILE_CLOSED:
             return "<Closed Exdir File>"
-        return "<Exdir File '{}' (mode {})>".format(
-            self.directory, self.user_mode)
+        return f"<Exdir File '{self.directory}' (mode {self.user_mode})>"
