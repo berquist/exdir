@@ -132,12 +132,7 @@ class Dataset(exob.Object):
             shape=value.shape
         )
 
-        if len(value.shape) == 0:
-            # scalars need to be set with itemset
-            self._data_memmap.itemset(value)
-        else:
-            # replace the contents with the value
-            self._data_memmap[:] = value
+        self._data_memmap[...] = value
 
         # update attributes and plugin metadata
         if attrs:
